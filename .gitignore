@@ -1,0 +1,58 @@
+# Xcode
+.DS_Store
+build/
+DerivedData/
+*.xcworkspace
+!Default.xcworkspace
+xcuserdata/
+*.xcuserstate
+*.xcodeproj/xcuserdata/
+
+# Swift Package Manager
+/.build/
+/Packages/
+/.swiftpm/xcode/package.xcworkspace
+
+# CocoaPods
+Pods/
+
+# Carthage
+Carthage/Build/
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Xcode Server
+integration/
+
+# Archive files
+*.xcarchive
+
+# SwiftUI previews (temporary files)
+*.diff
+
+# Playground
+timeline.xctimeline
+playground.xcworkspace
+
+# App Distribution
+*.ipa
+
+# OS files
+*.swp
+*~
+
+# Certificates and keys
+*.cer
+*.key
+*.mobileprovision
+
+# User-specific files
+*.moved-aside
+*.xcuserstate
+
+# Misc
+*.lock
