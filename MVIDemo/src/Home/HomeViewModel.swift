@@ -22,6 +22,9 @@ final class HomeViewModel {
     /// List of items fetched from the service
     var items: [ListItemEntity] = []
     
+    /// Indicates whether the initial load spinner should be shown
+    var isLoading: Bool = true
+    
     /// Indicates whether a refresh operation is in progress
     var isRefreshing: Bool = false
     
@@ -61,5 +64,17 @@ final class HomeViewModel {
             items = pending
             pendingItems = nil
         }
+    }
+    
+    @MainActor
+    func initialLoad() async {
+        isLoading = true
+        do {
+            let fetchedItems = try await service.fetchListItems()
+            items = fetchedItems
+        } catch {
+            // silently fail
+        }
+        isLoading = false
     }
 }

@@ -29,8 +29,9 @@ struct HomeView: View {
         NavigationStack {
             ScrollView {
                 LazyVStack(spacing: 0) {
-                    // Show EmptyView when no data, ListContent when has data
-                    if viewModel.items.isEmpty {
+                    if viewModel.isLoading {
+                        // loading
+                    } else if viewModel.items.isEmpty {
                         emptyView
                     } else {
                         listView
@@ -41,6 +42,16 @@ struct HomeView: View {
                 await viewModel.fetchData()
                 viewModel.endRefresh()
                 viewModel.applyPendingItems()
+            }
+            .overlay {
+                if viewModel.isLoading {
+                    ProgressView()
+                        .scaleEffect(1.5)
+                        .tint(.gray)
+                }
+            }
+            .task {
+                await viewModel.initialLoad()
             }
             .toolbar(.hidden, for: .navigationBar)
         }

@@ -23,7 +23,7 @@ struct DetailView: View {
             VStack(alignment: .leading, spacing: 16) {
                 // Metadata
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("meta")
+                    Text("META")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .textCase(.uppercase)
@@ -44,7 +44,7 @@ struct DetailView: View {
                 
                 // Title Section
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("title")
+                    Text("TITLE")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .textCase(.uppercase)
@@ -61,7 +61,7 @@ struct DetailView: View {
                 
                 // Content Section
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("content")
+                    Text("CONTENT")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .textCase(.uppercase)
