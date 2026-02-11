@@ -9,7 +9,9 @@ import Foundation
 
 import SwiftUI
 
-/// Detail view for displaying the full content of a list item
+/// Detail view for displaying the full content of a list item.
+/// This screen is display-only with no mutable state or user interactions that change data,
+/// so MVI is intentionally not applied here — keeping it simple avoids over-engineering.
 struct DetailView: View {
     
     // MARK: - Properties

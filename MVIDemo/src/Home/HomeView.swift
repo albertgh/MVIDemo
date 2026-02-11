@@ -7,20 +7,22 @@
 
 import SwiftUI
 
-/// Home screen view displaying a list of items
-/// Shows EmptyView when no data, can be pulled down to refresh
-/// After fetch, displays list content
+// MARK: - HomeView
+
+/// Home screen view following MVI architecture.
+/// The View is a pure function of the container's state — it only reads state and sends intents.
+/// All business logic lives in HomeContainer.
 struct HomeView: View {
     
-    // MARK: - ViewModel
+    // MARK: - Container
     
-    @State private var viewModel: HomeViewModel
+    /// MVI container that owns the state and processes intents
+    @State private var container: HomeContainer
     
     // MARK: - Initialization
     
-    //init(viewModel: HomeViewModel = HomeViewModel(service: MockListFetchService())) {
-    init(viewModel: HomeViewModel = HomeViewModel()) {
-        _viewModel = State(initialValue: viewModel)
+    init(container: HomeContainer = HomeContainer()) {
+        _container = State(initialValue: container)
     }
     
     // MARK: - Body
@@ -29,29 +31,45 @@ struct HomeView: View {
         NavigationStack {
             ScrollView {
                 LazyVStack(spacing: 0) {
-                    if viewModel.isLoading {
-                        // loading
-                    } else if viewModel.items.isEmpty {
-                        emptyView
-                    } else {
-                        listView
+                    switch container.state.phase {
+                    case .loading:
+                        // Loading phase: show nothing here, spinner is in overlay
+                        Color.clear
+                        
+                    case .loaded:
+                        if container.state.items.isEmpty {
+                            // Loaded but no items — show empty state
+                            emptyView
+                        } else {
+                            // Loaded with items — show list
+                            listView
+                        }
+                        
+                    case .error(let message):
+                        // Error state — show error message with retry
+                        errorView(message: message)
                     }
                 }
             }
             .refreshable {
-                await viewModel.fetchData()
-                viewModel.endRefresh()
-                viewModel.applyPendingItems()
+                // Send refresh intent — side effect will fetch and dispatch loadCompleted/loadFailed
+                await withCheckedContinuation { continuation in
+                    container.send(.refresh)
+                    // Allow the refresh animation to complete after intent is sent
+                    continuation.resume()
+                }
             }
             .overlay {
-                if viewModel.isLoading {
+                // Show spinner during loading phase
+                if container.state.phase == .loading {
                     ProgressView()
                         .scaleEffect(1.5)
                         .tint(.gray)
                 }
             }
             .task {
-                await viewModel.initialLoad()
+                // Send initial load intent when the view first appears
+                container.send(.initialLoad)
             }
             .toolbar(.hidden, for: .navigationBar)
         }
@@ -59,11 +77,9 @@ struct HomeView: View {
     
     // MARK: - View Components
     
-    /// Empty state view - part of scrollable content, fills entire screen
+    /// Empty state view — displayed when data loaded but result is empty
     private var emptyView: some View {
         EmptyView {
-            // Trigger network permission check when empty view appears
-            // This will cause iOS to show the system network permission alert if not already granted
             Task {
                 await NetworkPermissionService.shared.ensureNetworkPermission()
             }
@@ -72,9 +88,30 @@ struct HomeView: View {
         .containerRelativeFrame([.vertical])
     }
     
-    /// List content view - shows items when available
+    /// Error state view with retry button
+    private func errorView(message: String) -> some View {
+        VStack(spacing: 16) {
+            Image(systemName: "exclamationmark.triangle")
+                .font(.system(size: 40))
+                .foregroundStyle(.secondary)
+            
+            Text(message)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            
+            Button("Retry") {
+                container.send(.initialLoad)
+            }
+            .buttonStyle(.bordered)
+        }
+        .frame(maxWidth: .infinity)
+        .containerRelativeFrame([.vertical])
+    }
+    
+    /// List content view — shows items when available
     private var listView: some View {
-        ForEach(viewModel.items) { item in
+        ForEach(container.state.items) { item in
             NavigationLink(destination: DetailView(item: item)) {
                 rowView(for: item)
             }
@@ -98,9 +135,9 @@ struct HomeView: View {
 // MARK: - Previews
 
 #Preview("Production Service") {
-    HomeView(viewModel: HomeViewModel(service: ListFetchService()))
+    HomeView(container: HomeContainer(service: ListFetchService()))
 }
 
 #Preview("Mock Service") {
-    HomeView(viewModel: HomeViewModel(service: MockListFetchService()))
+    HomeView(container: HomeContainer(service: MockListFetchService()))
 }
