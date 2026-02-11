@@ -11,7 +11,8 @@ import Foundation
 
 /// Represents the complete, immutable UI state for the Home screen.
 /// This is the single source of truth — the View renders purely from this struct.
-struct HomeState: Equatable {
+/// Conforms to Sendable as it is a pure value type safe across isolation boundaries.
+struct HomeState: Equatable, Sendable {
     
     /// The current phase of the Home screen lifecycle
     enum Phase: Equatable {

@@ -8,8 +8,9 @@
 import Foundation
 
 
-/// Production implementation of ListServiceProtocol that fetches data from remote API
-final class ListFetchService: ListServiceProtocol {
+/// Production implementation of ListServiceProtocol that fetches data from remote API.
+/// Marked @unchecked Sendable because URLSession and JSONDecoder are thread-safe but not formally Sendable.
+final class ListFetchService: ListServiceProtocol, @unchecked Sendable {
     
     // MARK: - Endpoint Configuration
     

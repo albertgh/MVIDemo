@@ -8,8 +8,9 @@
 import Foundation
 
 
-/// Protocol defining the contract for list data fetching services
-protocol ListServiceProtocol {
+/// Protocol defining the contract for list data fetching services.
+/// Conforms to Sendable for safe usage across actor isolation boundaries (Swift 6 concurrency).
+protocol ListServiceProtocol: Sendable {
     /// Fetches list items from the data source
     /// - Returns: Array of ListItemEntity
     /// - Throws: Error if fetching fails

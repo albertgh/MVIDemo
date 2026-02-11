@@ -8,7 +8,7 @@
 import Foundation
 
 /// Mock implementation of ListServiceProtocol for testing and offline development
-final class MockListFetchService: ListServiceProtocol {
+final class MockListFetchService: ListServiceProtocol, Sendable {
     
     // MARK: - Configuration
     
