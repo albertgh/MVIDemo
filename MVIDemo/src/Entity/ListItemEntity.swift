@@ -9,9 +9,9 @@ import Foundation
 
 /// Entity model representing a list item from the API
 struct ListItemEntity: Codable, Identifiable, Equatable {
+    let userId: Int
     let id: Int
     let title: String
-    let subtitle: String
-    let content: String
+    let body: String
 }
 

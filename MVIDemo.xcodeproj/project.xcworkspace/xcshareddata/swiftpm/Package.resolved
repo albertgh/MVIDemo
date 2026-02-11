@@ -1,0 +1,15 @@
+{
+  "originHash" : "ff13354e6cbb3a4c1ec55a689d1da45fb54c0012c84d9f5a33d32d78e792cb64",
+  "pins" : [
+    {
+      "identity" : "acenhancement",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/albertgh/ACEnhancement.git",
+      "state" : {
+        "revision" : "087138b191636cd8d2e65db38862524f0032051f",
+        "version" : "1.1.8"
+      }
+    }
+  ],
+  "version" : 3
+}
